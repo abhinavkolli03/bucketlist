@@ -1,15 +1,20 @@
 import React from 'react';
+import "../styling/itinerarytab.css"
 
-const ItineraryItem = ({ tab }) => {
+const ItineraryItem = ({ itin, onItineraryClick }) => {
+  const handleItineraryEdit = () => {
+    onItineraryClick(itin.id);
+  };
+
   return (
-    <div className="tab-item">
-      <div className="tab-image-container">
-        <img className="tab-image" src={require("../test-images/" + tab.image)} alt={tab.title} />
+    <div className="itin-tab-item" onClick={handleItineraryEdit}>
+      <div className="itin-tab-image-container">
+        <img className="itin-tab-image" src={require("../test-images/" + itin.image)} alt={itin.title} />
       </div>
-      <div className="tab-content">
-        <h3>{tab.title}</h3>
-        <p style={{fontSize: "1rem"}}>{tab.duration}</p>
-        <p>{tab.description}</p>
+      <div className="itin-tab-content">
+        <h3>{itin.title}</h3>
+        <p>{itin.duration}</p>
+        <p>{itin.description}</p>
       </div>
     </div>
   );
