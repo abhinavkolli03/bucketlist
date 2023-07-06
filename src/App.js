@@ -1,70 +1,43 @@
 import React, {useState} from 'react';
 import ItineraryItem from './components/ItineraryItem';
-import EditScreen from './screens/EditItineraryScreen'
+import EditItineraryScreen from './screens/EditItineraryScreen'
 import "./App.css"
 
+import itinerariesData from './data/itineraries.js';
+import AddItineraryButton from './components/AddItineraryButton';
+
 const App = () => {
-  const [itineraries, setItineraries] = useState([
-    {
-      id: 1,
-      image: "portugal.jpg",
-      title: "Pondering Portugal",
-      duration: "3 days",
-      description: "What is Portugal famous for? Wine, for sure; this is where you'll find some of the oldest wine-growing regions in the world. In fact, two of Portugal's wine-growing regions, the Douro Valley and Pico Island in the Azores, are protected as UNESCO World Heritage Sites.",
-      thoughtBubble: "This was an interesting trip to say the least."
-    },
-    {
-      id: 2,
-      image: "spain.jpg",
-      title: "Strolling through Spain",
-      duration: "2 weeks",
-      description: "Spain is cool",
-      thoughtBubble: "I don't like spaniards!"
-    },
-    {
-      id: 3,
-      image: "canada.jpg",
-      title: "Canadian Cruise",
-      duration: "1 week",
-      description: "Maple syrup is yum.",
-      thoughtBubble: "Cute ride ;)"
-    },
-    {
-      id: 4,
-      image: "amazon.jpg",
-      title: "Trekking The Amazon Trees",
-      duration: "1 month",
-      description: "This will be a long voyage.",
-      thoughtBubble: "I love working for amazon but the trees."
-    },
-    {
-      id: 5,
-      image: "date.jpg",
-      title: "Little Elm First Date Plans",
-      duration: "4 hours",
-      description: "You will definitely bag her with this.",
-      thoughtBubble: "I will say this worked 10/10."
-    },
-  ])
+  const [isAddingItinerary, setIsAddingItinerary] = useState(false)
+  const [itineraries, setItineraries] = useState(itinerariesData)
 
   const [selectedItinerary, setSelectedItinerary] = useState(null)
   const [isEditScreenVisible, setIsEditScreenVisible] = useState(false)
 
-  const handleItineraryClick = (itenId) => {
-    console.log("help")
-    const findItinerary = itineraries.find((itinerary) => itinerary.id === itenId)
-    setSelectedItinerary(findItinerary)
-    setIsEditScreenVisible(true)
-    console.log("Itinerary clicked:", itenId)
+  const handleAddItinerary = () => {
+    setIsAddingItinerary(true);
   }
 
-  const handleSavedItinerary = (updatedIten) => {
-    const updatedItens = itineraries.map((iten) =>
-      iten.id === updatedIten.id ? updatedIten : iten
+  const handleItineraryClick = (itinId) => {
+    console.log("help")
+    const findItinerary = itineraries.find((itinerary) => itinerary.id === itinId)
+    setSelectedItinerary(findItinerary)
+    setIsEditScreenVisible(true)
+    console.log("Itinerary clicked:", itinId)
+  }
+
+  const handleSavedItinerary = (updatedItin) => {
+    const updatedItins = itineraries.map((itin) =>
+      itin.id === updatedItin.id ? updatedItin : itin
     );
-    setItineraries(updatedItens)
+    setItineraries(updatedItins)
     setIsEditScreenVisible(false)
-    console.log("Updated itinerary:", updatedIten)
+    console.log("Updated itinerary:", updatedItin)
+  }
+
+  const handleSaveNewItinerary = (newItin) => {
+    const updatedItins = [...itineraries, newItin]
+    setItineraries(updatedItins)
+    setIsAddingItinerary(false)
   }
 
   const handleCloseEditScreen = () => {
@@ -89,13 +62,21 @@ const App = () => {
           <ItineraryItem key={itin.id} itin={itin} onItineraryClick={handleItineraryClick} />
         ))}
       </div>
+      {isAddingItinerary && (
+        <EditItineraryScreen 
+          itin={null}
+          onSavingItin={handleSaveNewItinerary}
+          onClosingEdit={handleCloseEditScreen}
+        />
+      )}
       {isEditScreenVisible && (
-        <EditScreen 
+        <EditItineraryScreen 
           itin={selectedItinerary}
           onSavingItin={handleSavedItinerary}
           onClosingEdit={handleCloseEditScreen}
         />
       )}
+      <AddItineraryButton onAddItinerary={handleAddItinerary} />
     </div>
   );
 };
