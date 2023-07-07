@@ -4,7 +4,6 @@ import EditItineraryScreen from './screens/EditItineraryScreen'
 import "./App.css"
 
 import itinerariesData from './data/itineraries.js';
-import AddItineraryButton from './components/AddItineraryButton';
 
 const App = () => {
   const [isAddingItinerary, setIsAddingItinerary] = useState(false)
@@ -12,6 +11,7 @@ const App = () => {
 
   const [selectedItinerary, setSelectedItinerary] = useState(null)
   const [isEditScreenVisible, setIsEditScreenVisible] = useState(false)
+  const [isAddButtonExpanded, setIsAddButtonExpanded] = useState(false);
 
   const handleAddItinerary = () => {
     setIsAddingItinerary(true);
@@ -46,6 +46,14 @@ const App = () => {
     console.log("Closed editing of itinerary")
   }
 
+  const handleAddButtonHover = () => {
+    setIsAddButtonExpanded(true);
+  };
+
+  const handleAddButtonLeave = () => {
+    setIsAddButtonExpanded(false);
+  };
+
   const name = 'Anish Palakurthi';
 
   return (
@@ -58,17 +66,29 @@ const App = () => {
         <p>Let's finish working on your Paris trip.</p>
       </div>
       <div className="tab-list">
+        <div className="add-itinerary-outer">
+          <div className="add-itinerary-inner">
+          {isAddButtonExpanded ? (
+            <div className="add-itinerary-expanded"
+              onClick={handleAddItinerary}
+              onMouseLeave={handleAddButtonLeave}
+            >
+            </div>
+          ) : (
+            <div
+              className="add-itinerary-button"
+              onClick={handleAddItinerary}
+              onMouseEnter={handleAddButtonHover}
+            >
+              +
+            </div>
+          )}
+          </div>
+        </div>
         {itineraries.map((itin) => (
           <ItineraryItem key={itin.id} itin={itin} onItineraryClick={handleItineraryClick} />
         ))}
       </div>
-      {isAddingItinerary && (
-        <EditItineraryScreen 
-          itin={null}
-          onSavingItin={handleSaveNewItinerary}
-          onClosingEdit={handleCloseEditScreen}
-        />
-      )}
       {isEditScreenVisible && (
         <EditItineraryScreen 
           itin={selectedItinerary}
@@ -76,7 +96,13 @@ const App = () => {
           onClosingEdit={handleCloseEditScreen}
         />
       )}
-      <AddItineraryButton onAddItinerary={handleAddItinerary} />
+      {isAddingItinerary && (
+        <EditItineraryScreen 
+          itin={null}
+          onSavingItin={handleSaveNewItinerary}
+          onClosingEdit={handleCloseEditScreen}
+        />
+      )}
     </div>
   );
 };

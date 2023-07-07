@@ -76,6 +76,12 @@
     cursor: not-allowed;
 }
     
+.error-message {
+    color: red;
+    font-size: 14px;
+    margin-top: 4px;
+}
+
 @media (max-width: 768px) {
     .edit-itin-screen-content {
     width: 90%;

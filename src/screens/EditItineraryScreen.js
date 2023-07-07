@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import "../styling/itineraryedit.css"
+import placeholderImage from "../test-images/placeholder.jpg"
 
 const EditItineraryScreen = ({ itin, onSavingItin, onClosingEdit }) => {
     //we will need to update more metadata here later on if we want more on the screen
@@ -10,6 +11,10 @@ const EditItineraryScreen = ({ itin, onSavingItin, onClosingEdit }) => {
     const [description, setDescription] = useState("")
     const [thoughtBubble, setThoughtBubble] = useState("")
     
+    //errors states
+    const [titleError, setTitleError] = useState("");
+    const [durationError, setDurationError] = useState("");
+    const [descriptionError, setDescriptionError] = useState("");
 
     //update content with useEffect if itin exists
     useEffect(() => {
@@ -24,6 +29,19 @@ const EditItineraryScreen = ({ itin, onSavingItin, onClosingEdit }) => {
 
     //creating new saved itinerary and storing data back in passed function
     const handleItinSave = () => {
+        //error checking
+        if (title.trim() === "") {
+            setTitleError("Please enter a title");
+        }
+        if (description.trim() === "") {
+            setDescriptionError("Please enter a description");
+        }
+        if (duration.trim() === "") {
+            setDurationError("Please enter a duration");
+        }
+        if(titleError || descriptionError || durationError) {
+            return
+        }
         if (!imageChecker) {
             return;
         }
@@ -69,14 +87,17 @@ const EditItineraryScreen = ({ itin, onSavingItin, onClosingEdit }) => {
 
     const handleTitleChange = (e) => {
         setTitle(e.target.value)
+        setTitleError("");
     }
 
     const handleDurationChange = (e) => {
         setDuration(e.target.value)
+        setDurationError("")
     }
     
     const handleDescriptionChange = (e) => {
         setDescription(e.target.value)
+        setDescriptionError("")
     }
     
     const handleThoughtBubbleChange = (e) => {
@@ -86,38 +107,53 @@ const EditItineraryScreen = ({ itin, onSavingItin, onClosingEdit }) => {
     return (
         <div className="edit-itin-screen">
             <div className="edit-itin-header">
-                <img className="edit-itin-screen-image" src={require("../test-images/" + itin.image)} alt={itin.title} />
+                <img className="edit-itin-screen-image"
+                    src={itin && itin.image ? require("../test-images/" + itin.image) : placeholderImage}
+                    alt={itin && itin.title}
+                />            
             </div>
             <div className="edit-itin-screen-content">
-                <input
-                    className="edit-itin-screen-input"
-                    type="text"
-                    value={imageFile}
-                    onChange={handleImageChange}
-                    placeholder="Image URL"
-                />
-                {!imageChecker && <p className="error-message">Invalid image name</p>}
-                <input 
-                    className="edit-itin-screen-input"
-                    type="text"
-                    value={title}
-                    onChange={handleTitleChange}
-                    placeholder="Itinerary Title"
-                />
-                <input 
-                    className="edit-itin-screen-input"
-                    type="text"
-                    value={duration}
-                    onChange={handleDurationChange}
-                    placeholder="Duration"
-                />
-                <textarea 
-                    className="edit-itin-screen-input"
-                    type="text"
-                    value={description}
-                    onChange={handleDescriptionChange}
-                    placeholder="Description"
-                />
+                <div className="input-container">
+                    <input
+                        className="edit-itin-screen-input"
+                        type="text"
+                        value={imageFile}
+                        onChange={handleImageChange}
+                        placeholder="Image URL"
+                    />
+                    {!imageChecker && <p className="error-message">Invalid image name</p>}
+                </div>
+                <div className="input-container">
+                    <input 
+                        className="edit-itin-screen-input"
+                        type="text"
+                        value={title}
+                        onChange={handleTitleChange}
+                        placeholder="Itinerary Title"
+                    />
+                    {titleError && <p className="error-message">{titleError}</p>}
+                </div>
+                <div className="input-container">
+                    <input 
+                        className="edit-itin-screen-input"
+                        type="text"
+                        value={duration}
+                        onChange={handleDurationChange}
+                        placeholder="Duration"
+                    />
+                    {durationError && <p className="error-message">{durationError}</p>}
+                </div>
+                <div className="input-container">
+                    <textarea 
+                        className="edit-itin-screen-input"
+                        type="text"
+                        value={description}
+                        onChange={handleDescriptionChange}
+                        placeholder="Description"
+                    />
+                    {console.log(descriptionError)}
+                    {descriptionError && <p className="error-message">{descriptionError}</p>}
+                </div>
                 <textarea 
                     className="edit-itin-screen-input"
                     type="text"
