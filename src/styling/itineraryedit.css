@@ -28,6 +28,8 @@
     width: 80%;
     max-width: 500px;
     margin-top: -20px;
+    overflow-y: auto;
+    max-height: 400px;
 }
 
 .edit-itin-screen-image {
@@ -48,6 +50,7 @@
 
 .edit-itin-screen-textarea {
     resize: vertical;
+    max-width: 100%;
 }
 
 .edit-itin-screen-button {
@@ -81,6 +84,38 @@
     font-size: 14px;
     margin-top: 4px;
 }
+
+.input-container {
+    position: relative;
+}
+
+.input-container .error-message {
+    position: absolute;
+    bottom: 50px;
+    left: 0;
+    font-size: 12px;
+    color: red;
+}
+
+.duration-input-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.duration-value-input {
+    width: 150px;
+    margin-right: 5px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+.duration-unit-select {
+    padding-left: 5px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+  
 
 @media (max-width: 768px) {
     .edit-itin-screen-content {

@@ -3,7 +3,9 @@ const itinerariesData = [
         "id": 1,
         "image": "portugal.jpg",
         "title": "Pondering Portugal",
-        "duration": "3 days",
+        "startDate": "2023-12-03",
+        "duration": "3 Days",
+        "endDate": "2023-12-06",
         "description": "What is Portugal famous for? Wine, for sure; this is where you'll find some of the oldest wine-growing regions in the world. In fact, two of Portugal's wine-growing regions, the Douro Valley and Pico Island in the Azores, are protected as UNESCO World Heritage Sites.",
         "thoughtBubble": "This was an interesting trip to say the least."
     },
@@ -11,7 +13,9 @@ const itinerariesData = [
         "id": 2,
         "image": "spain.jpg",
         "title": "Strolling through Spain",
-        "duration": "2 weeks",
+        "startDate": "2023-12-03",
+        "duration": "2 Weeks",
+        "endDate": "2023-12-17",
         "description": "Spain is cool",
         "thoughtBubble": "I don't like spaniards!"
     },
@@ -19,7 +23,9 @@ const itinerariesData = [
         "id": 3,
         "image": "canada.jpg",
         "title": "Canadian Cruise",
-        "duration": "1 week",
+        "startDate": "2023-12-03",
+        "duration": "1 Weeks",
+        "endDate": "2024-12-10",
         "description": "Maple syrup is yum.",
         "thoughtBubble": "Cute ride ;)"
     },
@@ -27,7 +33,9 @@ const itinerariesData = [
         "id": 4,
         "image": "amazon.jpg",
         "title": "Trekking The Amazon Trees",
-        "duration": "1 month",
+        "startDate": "2023-12-03",
+        "duration": "4 Weeks",
+        "endDate": "2024-01-03",
         "description": "This will be a long voyage.",
         "thoughtBubble": "I love working for amazon but the trees."
     },
@@ -35,7 +43,9 @@ const itinerariesData = [
         "id": 5,
         "image": "date.jpg",
         "title": "Little Elm First Date Plans",
-        "duration": "4 hours",
+        "startDate": "2023-12-03",
+        "duration": "4 Hours",
+        "endDate": "2024-01-03",
         "description": "You will definitely bag her with this.",
         "thoughtBubble": "I will say this worked 10/10."
     }

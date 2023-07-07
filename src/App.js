@@ -30,12 +30,15 @@ const App = () => {
       itin.id === updatedItin.id ? updatedItin : itin
     );
     setItineraries(updatedItins)
+    console.log(updatedItin.startDate, updatedItin.endDate)
     setIsEditScreenVisible(false)
     console.log("Updated itinerary:", updatedItin)
   }
 
   const handleSaveNewItinerary = (newItin) => {
     const updatedItins = [...itineraries, newItin]
+    console.log(newItin.startDate)
+    console.log(newItin.endDate)
     setItineraries(updatedItins)
     setIsAddingItinerary(false)
   }
@@ -43,6 +46,7 @@ const App = () => {
   const handleCloseEditScreen = () => {
     setSelectedItinerary(null)
     setIsEditScreenVisible(false)
+    setIsAddingItinerary(false)
     console.log("Closed editing of itinerary")
   }
 
@@ -98,7 +102,7 @@ const App = () => {
       )}
       {isAddingItinerary && (
         <EditItineraryScreen 
-          itin={null}
+          itin={{}}
           onSavingItin={handleSaveNewItinerary}
           onClosingEdit={handleCloseEditScreen}
         />

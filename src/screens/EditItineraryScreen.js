@@ -1,68 +1,180 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import "../styling/itineraryedit.css"
 import placeholderImage from "../test-images/placeholder.jpg"
+import moment, { duration } from "moment"
 
 const EditItineraryScreen = ({ itin, onSavingItin, onClosingEdit }) => {
     //we will need to update more metadata here later on if we want more on the screen
     const [imageFile, setImageFile] = useState("placeholder.jpg")
     const [imageChecker, setImageChecker] = useState(true)
     const [title, setTitle] = useState("")
-    const [duration, setDuration] = useState("")
+    const [durationValue, setDurationValue] = useState(null);
+    const [durationUnit, setDurationUnit] = useState("");
+    const [maxValueForUnit, setMaxValueForUnit] = useState("365");
     const [description, setDescription] = useState("")
     const [thoughtBubble, setThoughtBubble] = useState("")
-    
+
+    const [startDate, setStartDate] = useState("");
+    const [endDate, setEndDate] = useState("");
+
+    //word count
+    const [descriptionWordCount, setDescriptionWordCount] = useState(0);
+    const DESCRIPTION_MAX = 250;
+
+    //ref for resizing textarea and miscellaneous
+    const descriptionAreaRef = useRef(null); 
+    const thoughBubbleAreaRef = useRef(null); 
+    const [addPlural, setAddPlural] = useState("")
+    const [addingNewItin, setAddingNewItin] = useState(false)
+
     //errors states
     const [titleError, setTitleError] = useState("");
     const [durationError, setDurationError] = useState("");
     const [descriptionError, setDescriptionError] = useState("");
+    const [isInitialized, setIsInitialized] = useState(false)
+    const [timeInitialized, setTimeInitialized] = useState(false)
+    const [startDateError, setStartDateError] = useState(false)
 
     //update content with useEffect if itin exists
     useEffect(() => {
-        if (itin) {
-            setTitle(itin.title);
-            setDuration(itin.duration);
-            setDescription(itin.description);
-            setThoughtBubble(itin.thoughtBubble);
-            setImageFile(itin.image);
+        if (itin && itin.title) {
+            if(!timeInitialized) {
+                setTitle(itin.title);
+                const durationParts = itin.duration.split(" ")
+                setDurationValue(parseInt(durationParts[0]))
+                setDurationUnit(durationParts[1])
+                setDescription(itin.description);
+                setThoughtBubble(itin.thoughtBubble);
+                setImageFile(itin.image);
+                setStartDate(itin.startDate)
+                setEndDate(itin.endDate)
+            }
+            setIsInitialized(true);
+            setTimeInitialized(true);
+        } else {
+            setAddingNewItin(true);
+            setTitleError("Please enter a title for the itinerary");
+            setDurationError("Please enter a proper duration for your itinerary")
+            setDescriptionError("Please enter a description about the itinerary");
         }
-    }, [itin]);
+    }, [itin, durationValue, durationUnit, timeInitialized]);
+
+    //setting word count
+    useEffect(() => {
+        const value = checkWords(description);
+        setDescriptionWordCount(value)
+        if (value <= 0) {
+            setDescriptionError("Please enter a description about the itinerary")
+        } else {
+            setDescriptionError("")
+        }
+    }, [description])
+
+    //setting error states
+    useEffect(() => {
+        if(isInitialized && durationUnit === "" && durationValue === null) {
+            setDurationError("Please enter a duration")
+        }
+    }, [isInitialized, durationUnit, durationValue])
+
+    useEffect(() => {
+        if (isInitialized && title.trim() === "") {
+            setTitleError("Please enter a title for the itinerary");
+        }
+    }, [isInitialized, title])
+
+    useEffect(() => {
+        if(durationValue > 1) {
+            setAddPlural("s")
+        } else {
+            setAddPlural("")
+        }
+    }, [durationValue])
+
+    useEffect(()=> {
+        if(isInitialized && (durationUnit === "None" && !durationValue)) {
+            setDurationError("Please enter a proper duration for your itinerary!")
+        } else {
+            setDurationError("")
+        }
+    }, [isInitialized, durationUnit, durationValue])
+
+    //handling unit changes
+    useEffect(() => {
+        setMaxValueForUnit(getMaxValueForUnit(durationUnit))
+        if (durationValue > getMaxValueForUnit(durationUnit)) {
+            setMaxValueForUnit(getMaxValueForUnit(durationUnit));
+        }
+    }, [durationValue, durationUnit])
+
+    //handling ref resizing of textareas
+    useEffect(() => {
+        if (descriptionAreaRef.current) {
+            descriptionAreaRef.current.style.height = "auto";
+            descriptionAreaRef.current.style.height = `${descriptionAreaRef.current.scrollHeight}px`;
+        }
+    }, [description])
+
+    useEffect(() => {
+        if (thoughBubbleAreaRef.current) {
+            thoughBubbleAreaRef.current.style.height = "auto";
+            thoughBubbleAreaRef.current.style.height = `${thoughBubbleAreaRef.current.scrollHeight}px`;
+        }
+    }, [thoughtBubble])
+
+    //handle closing of itinerary
+    const handleItinClose = () => {
+        if (addingNewItin) {
+            onClosingEdit();
+        } else {
+            onSavingItin(itin);
+            onClosingEdit();
+        }
+    };
+      
 
     //creating new saved itinerary and storing data back in passed function
     const handleItinSave = () => {
-        //error checking
-        if (title.trim() === "") {
-            setTitleError("Please enter a title");
-        }
-        if (description.trim() === "") {
-            setDescriptionError("Please enter a description");
-        }
-        if (duration.trim() === "") {
-            setDurationError("Please enter a duration");
-        }
-        if(titleError || descriptionError || durationError) {
-            return
-        }
-        if (!imageChecker) {
+        if (!imageChecker || titleError || durationError || descriptionError) {
             return;
         }
-        const newItin = {
-            ...itin,
-            id: itin ? itin.id : Date.now(),
-            title: title,
-            duration: duration,
-            description: description,
-            thoughtBubble: thoughtBubble,
-            image: imageFile,
-        };
+
+        const durationInDays = durationValue * getUnitMultiplier(durationUnit);
+
+        const startDateObj = moment(startDate, "YYYY-MM-DD");
+
+        const endDateObj = startDateObj.clone().add(durationInDays, "days");
+
+        let newItin;
+        if (itin) {
+            newItin = {
+                ...itin,
+                title: title,
+                duration: durationValue + " " + durationUnit,
+                description: description,
+                thoughtBubble: thoughtBubble,
+                image: imageFile || itin.image,
+                startDate: startDateObj.format("YYYY-MM-DD"),
+                endDate: endDateObj.format("YYYY-MM-DD"),
+            };
+        } else {
+            newItin = {
+                id: Date.now(),
+                title: title,
+                duration: durationValue + " " + durationUnit,
+                description: description,
+                thoughtBubble: thoughtBubble,
+                image: imageFile,
+                startDate: startDateObj.format("MM/DD/YYYY"),
+                endDate: endDateObj.format("MM/DD/YYYY"),
+            };
+        }
 
         console.log(newItin.image)
 
-        if (itin) {
-            newItin.image = imageFile || itin.image;
-        }
-
         onSavingItin(newItin)
         onClosingEdit()
+        setIsInitialized(false)
     }
 
     //all the editing features for handling textarea changes
@@ -85,21 +197,69 @@ const EditItineraryScreen = ({ itin, onSavingItin, onClosingEdit }) => {
         }
     }
 
+    const handleStartDateChange = (e) => {
+        setStartDate(e.target.value);
+        setStartDateError("");
+    }
+
     const handleTitleChange = (e) => {
         setTitle(e.target.value)
         setTitleError("");
     }
 
-    const handleDurationChange = (e) => {
-        setDuration(e.target.value)
-        setDurationError("")
-    }
+    const handleDurationValueChange = (e) => {
+        setDurationValue(e.target.value);
+    };
     
+    const handleDurationUnitChange = (e) => {
+        setDurationUnit(e.target.value);
+    };
+
+    const getMaxValueForUnit = (unit) => {
+        switch (unit) {
+        case "Hours":
+            return 24;
+        case "Days":
+            return 365;
+        case "Weeks":
+            return 52;
+        default:
+            return 0;
+        }
+    }; 
+    
+    const getUnitMultiplier = (unit) => {
+        switch (unit) {
+        case "Hours":
+            return 1 / 24;
+        case "Days":
+            return 1;
+        case "Weeks":
+            return 7;
+        default:
+            return 0;
+        }
+    };
+
     const handleDescriptionChange = (e) => {
-        setDescription(e.target.value)
-        setDescriptionError("")
+        const value = e.target.value;
+        const wordCount = checkWords(value)
+        if (wordCount <= DESCRIPTION_MAX) {
+            setDescription(value)
+            setDescriptionWordCount(wordCount);
+        } else {
+            setDescription(value.split(" ").slice(0, DESCRIPTION_MAX).join(" "))
+        }
     }
-    
+
+    const checkWords = (text) => {
+        const words = text.trim().split(/\s+/)
+        if (words.length == 1 && words[0] === "") {
+            return 0
+        }
+        return words.length;
+    }
+
     const handleThoughtBubbleChange = (e) => {
         setThoughtBubble(e.target.value)
     }
@@ -113,7 +273,7 @@ const EditItineraryScreen = ({ itin, onSavingItin, onClosingEdit }) => {
                 />            
             </div>
             <div className="edit-itin-screen-content">
-                <div className="input-container">
+                <div>
                     <input
                         className="edit-itin-screen-input"
                         type="text"
@@ -123,7 +283,7 @@ const EditItineraryScreen = ({ itin, onSavingItin, onClosingEdit }) => {
                     />
                     {!imageChecker && <p className="error-message">Invalid image name</p>}
                 </div>
-                <div className="input-container">
+                <div>
                     <input 
                         className="edit-itin-screen-input"
                         type="text"
@@ -133,28 +293,51 @@ const EditItineraryScreen = ({ itin, onSavingItin, onClosingEdit }) => {
                     />
                     {titleError && <p className="error-message">{titleError}</p>}
                 </div>
-                <div className="input-container">
-                    <input 
-                        className="edit-itin-screen-input"
-                        type="text"
-                        value={duration}
-                        onChange={handleDurationChange}
+                <input
+                    className="edit-itin-screen-input"
+                    type="date"
+                    value={startDate}
+                    onChange={handleStartDateChange}
+                    placeholder="Start Date"
+                />
+                <div className="duration-input-container">
+                    <input
+                        className="edit-itin-screen-input duration-value-input"
+                        type="number"
+                        min="1"
+                        max={maxValueForUnit}
+                        value={parseInt(durationValue, 10)}
+                        onChange={handleDurationValueChange}
                         placeholder="Duration"
                     />
-                    {durationError && <p className="error-message">{durationError}</p>}
+                    <select
+                        className="edit-itin-screen-input duration-unit-select"
+                        value={durationUnit}
+                        onChange={handleDurationUnitChange}
+                    >
+                        <option value="">None</option>
+                        <option value="Hours">Hour{addPlural}</option>
+                        <option value="Days">Day{addPlural}</option>
+                        <option value="Weeks">Week{addPlural}</option>
+                    </select>
                 </div>
-                <div className="input-container">
+                {durationError && <p className="error-message">{durationError}</p>}
+                <div>
                     <textarea 
+                        ref={descriptionAreaRef}
                         className="edit-itin-screen-input"
                         type="text"
                         value={description}
                         onChange={handleDescriptionChange}
                         placeholder="Description"
                     />
-                    {console.log(descriptionError)}
+                    <p className={descriptionWordCount > DESCRIPTION_MAX ? "word-count-exceeded" : ""}>
+                        {descriptionWordCount}/{DESCRIPTION_MAX} words
+                    </p>
                     {descriptionError && <p className="error-message">{descriptionError}</p>}
                 </div>
                 <textarea 
+                    ref={thoughBubbleAreaRef}
                     className="edit-itin-screen-input"
                     type="text"
                     value={thoughtBubble}
@@ -166,7 +349,7 @@ const EditItineraryScreen = ({ itin, onSavingItin, onClosingEdit }) => {
                 <button className="edit-itin-screen-button" onClick={handleItinSave}>
                     Save
                 </button>
-                <button className="edit-itin-screen-button" onClick={onClosingEdit}>
+                <button className="edit-itin-screen-button" onClick={handleItinClose}>
                     Close
                 </button>
             </div>
