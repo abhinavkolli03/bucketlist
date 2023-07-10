@@ -17,6 +17,7 @@ const EditItineraryScreen = ({ itin, onSavingItin, onClosingEdit }) => {
     const [startDate, setStartDate] = useState("");
     const [endDate, setEndDate] = useState("");
 
+
     //word count
     const [descriptionWordCount, setDescriptionWordCount] = useState(0);
     const DESCRIPTION_MAX = 250;
@@ -53,9 +54,15 @@ const EditItineraryScreen = ({ itin, onSavingItin, onClosingEdit }) => {
             setTimeInitialized(true);
         } else {
             setAddingNewItin(true);
-            setTitleError("Please enter a title for the itinerary");
-            setDurationError("Please enter a proper duration for your itinerary")
-            setDescriptionError("Please enter a description about the itinerary");
+            if (!title) {
+                setTitleError("Please enter a title for the itinerary");
+            }
+            if (!durationValue || !durationUnit) {
+                setDurationError("Please enter a proper duration for your itinerary")
+            }
+            if (!description) {
+                setDescriptionError("Please enter a description about the itinerary");
+            }
         }
     }, [itin, durationValue, durationUnit, timeInitialized]);
 
@@ -72,10 +79,18 @@ const EditItineraryScreen = ({ itin, onSavingItin, onClosingEdit }) => {
 
     //setting error states
     useEffect(() => {
-        if(isInitialized && durationUnit === "" && durationValue === null) {
-            setDurationError("Please enter a duration")
+        console.log(durationValue, durationUnit)
+        console.log(durationValue)
+        console.log(durationValue === null)
+        console.log(durationValue === "")
+        console.log(durationUnit === "")
+        if (durationUnit === "" || durationValue === "" || durationValue === null) {
+            console.log("worked")
+            setDurationError("Please enter a proper duration for your itinerary")
+        } else {
+            setDurationError("")
         }
-    }, [isInitialized, durationUnit, durationValue])
+    }, [durationUnit, durationValue])
 
     useEffect(() => {
         if (isInitialized && title.trim() === "") {
@@ -90,14 +105,6 @@ const EditItineraryScreen = ({ itin, onSavingItin, onClosingEdit }) => {
             setAddPlural("")
         }
     }, [durationValue])
-
-    useEffect(()=> {
-        if(isInitialized && (durationUnit === "None" && !durationValue)) {
-            setDurationError("Please enter a proper duration for your itinerary!")
-        } else {
-            setDurationError("")
-        }
-    }, [isInitialized, durationUnit, durationValue])
 
     //handling unit changes
     useEffect(() => {
@@ -201,7 +208,6 @@ const EditItineraryScreen = ({ itin, onSavingItin, onClosingEdit }) => {
         setStartDate(e.target.value);
         setStartDateError("");
     }
-
     const handleTitleChange = (e) => {
         setTitle(e.target.value)
         setTitleError("");
