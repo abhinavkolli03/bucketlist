@@ -21,7 +21,9 @@ const App = () => {
 
   const handleDayTrackerClick = (itinId) => {
     setIsDayTrackerOpen(true)
-    setSelectedItinerary(itinId)
+    const findItinerary = itineraries.find((itinerary) => itinerary.id === itinId)
+    setSelectedItinerary(findItinerary)
+    console.log(findItinerary)
   }
 
   const handleDayTrackerClose = () => {
@@ -141,7 +143,8 @@ const App = () => {
           onClosingEdit={handleCloseEditScreen}
         />
       )}
-      {selectedItinerary && (
+      {console.log(isDayTrackerOpen)}
+      {isDayTrackerOpen && (
         <DayTrackerScreen 
           itin={selectedItinerary}
           onClose={handleDayTrackerClose}

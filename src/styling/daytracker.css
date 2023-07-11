@@ -4,66 +4,95 @@
     left: 0;
     width: 100%;
     height: 100%;
-    background-color: #fff;
-    z-index: 9999;
+    z-index: 999;
+    background-color: rgba(0, 0, 0, 0.8);
     display: flex;
+    flex-direction: column;
     align-items: center;
+    justify-content: flex-start;
+    animation: fade-in 0.3s ease;
+}
+
+@keyframes fade-in {
+    from {
+    opacity: 0;
+    }
+    to {
+    opacity: 1;
+    }
+}
+
+.day-tracker-header {
+    width: 100%;
+    padding: 20px;
+    text-align: center;
+    background-color: #fff;
+}
+
+.day-tracker-title {
+    font-size: 24px;
+    font-weight: bold;
+    margin: 0;
+}
+
+.day-tracker-buttons-container {
+    display: flex;
     justify-content: center;
-    animation: fadeIn 0.3s ease-in-out;
-    overflow: hidden;
+    align-items: center;
+    margin-top: 20px;
+    padding: 10px;
+    background-color: #fff;
+}
+
+.day-tracker-button {
+    font-size: 16px;
+    font-weight: bold;
+    padding: 10px 20px;
+    margin-right: 10px;
+    border: none;
+    background-color: transparent;
+    color: #555;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.day-tracker-button:last-child {
+    margin-right: 0;
+}
+
+.day-tracker-button:focus {
+    outline: none;
+}
+
+.day-tracker-button.active {
+    color: #000;
+    border-bottom: 2px solid #0e8ac9;
+    font-weight: bold;
 }
 
 .day-tracker-content {
-    width: 80%;
-    max-width: 800px;
-    height: 80%;
-    max-height: 600px;
-    overflow: auto;
-    background-color: #fff;
-    border-radius: 4px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-    padding: 20px;
-    overflow-y: auto;
+    margin-top: 20px;
 }
 
-.day-tracker-close {
+.day-tracker-close-button {
     position: absolute;
     top: 10px;
     right: 10px;
+    font-size: 20px;
+    color: #aaa;
     cursor: pointer;
-    animation: fadeOut 0,3s ease-in-out;
 }
 
-.close-button {
-    display: inline-block;
-    padding: 5px 10px;
-    background-color: #ffffff;
-    border: none;
-    border-radius: 50%;
-    font-size: 18px;
-    font-weight: bold;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
+.day-tracker-close-button:hover {
+    color: #000;
 }
 
-.close-button:hover {
-    background-color: #f8f8f8;
+.day-tracker-close-button:focus {
+    outline: none;
 }
 
-@keyframes fadeIn {
-    from {
-        opacity: 0;
-    }
-    to {
-        opacity: 1;
-    }
-}
-  
-@keyframes fadeOut {
-    from {
-        opacity: 1;
-    }
-    to {
-        opacity: 0;
+@media screen and (max-width: 768px) {
+    .day-tracker-buttons-container {
+    justify-content: center;
     }
 }

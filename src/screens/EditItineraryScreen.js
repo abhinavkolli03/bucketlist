@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import "../styling/itineraryedit.css"
 import placeholderImage from "../test-images/placeholder.jpg"
-import moment, { duration } from "moment"
+import moment from "moment"
 
 const EditItineraryScreen = ({ itin, onSavingItin, onClosingEdit }) => {
     //we will need to update more metadata here later on if we want more on the screen
@@ -15,7 +15,6 @@ const EditItineraryScreen = ({ itin, onSavingItin, onClosingEdit }) => {
     const [thoughtBubble, setThoughtBubble] = useState("")
 
     const [startDate, setStartDate] = useState("");
-    const [endDate, setEndDate] = useState("");
 
 
     //word count
@@ -40,6 +39,7 @@ const EditItineraryScreen = ({ itin, onSavingItin, onClosingEdit }) => {
     useEffect(() => {
         if (itin && itin.title) {
             if(!timeInitialized) {
+                console.log(itin)
                 setTitle(itin.title);
                 const durationParts = itin.duration.split(" ")
                 setDurationValue(parseInt(durationParts[0]))
@@ -48,7 +48,6 @@ const EditItineraryScreen = ({ itin, onSavingItin, onClosingEdit }) => {
                 setThoughtBubble(itin.thoughtBubble);
                 setImageFile(itin.image);
                 setStartDate(itin.startDate)
-                setEndDate(itin.endDate)
             }
             setIsInitialized(true);
             setTimeInitialized(true);
@@ -64,7 +63,7 @@ const EditItineraryScreen = ({ itin, onSavingItin, onClosingEdit }) => {
                 setDescriptionError("Please enter a description about the itinerary");
             }
         }
-    }, [itin, durationValue, durationUnit, timeInitialized]);
+    }, [itin, durationValue, durationUnit, description, title, timeInitialized]);
 
     //setting word count
     useEffect(() => {
@@ -97,6 +96,15 @@ const EditItineraryScreen = ({ itin, onSavingItin, onClosingEdit }) => {
             setTitleError("Please enter a title for the itinerary");
         }
     }, [isInitialized, title])
+
+    useEffect(() => {
+        if (isInitialized) {
+            const pieces = startDate.split("-")
+            if (parseInt(pieces[0], 10) > 2100 || parseInt(pieces[0], 10) < 2000) {
+                setStartDateError("Please enter a proper start date for your itinerary")
+            }
+        }
+    }, [isInitialized, startDate])
 
     useEffect(() => {
         if(durationValue > 1) {
@@ -142,7 +150,7 @@ const EditItineraryScreen = ({ itin, onSavingItin, onClosingEdit }) => {
 
     //creating new saved itinerary and storing data back in passed function
     const handleItinSave = () => {
-        if (!imageChecker || titleError || durationError || descriptionError) {
+        if (!imageChecker || titleError || durationError || descriptionError || startDateError) {
             return;
         }
 
@@ -260,7 +268,7 @@ const EditItineraryScreen = ({ itin, onSavingItin, onClosingEdit }) => {
 
     const checkWords = (text) => {
         const words = text.trim().split(/\s+/)
-        if (words.length == 1 && words[0] === "") {
+        if (words.length === 1 && words[0] === "") {
             return 0
         }
         return words.length;
@@ -306,6 +314,7 @@ const EditItineraryScreen = ({ itin, onSavingItin, onClosingEdit }) => {
                     onChange={handleStartDateChange}
                     placeholder="Start Date"
                 />
+                {startDateError && <p className="error-message">{startDateError}</p>}
                 <div className="duration-input-container">
                     <input
                         className="edit-itin-screen-input duration-value-input"
