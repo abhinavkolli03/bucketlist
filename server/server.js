@@ -1,15 +1,14 @@
 const express = require("express");
 const mongoose = require("mongoose");
 const app = express();
+require("dotenv").config();
 
 app.get("/", (req, res) => {
   res.send("Test node api");
 });
 
 mongoose
-  .connect(
-    "mongodb+srv://root:bucketList1@bucketlist.vn7sm5e.mongodb.net/Node-API?retryWrites=true&w=majority"
-  )
+  .connect(process.env.MONGO_SERVER)
   .then(() => {
     console.log("Connected to MongoDB");
     app.listen(3000, () => {
