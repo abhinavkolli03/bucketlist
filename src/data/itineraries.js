@@ -34,6 +34,66 @@ const itinerariesData = [
                 "notes": "",
                 "ticketLink": ""
             },
+            "3": {
+                "image": "",
+                "eventName": "Travel Time",
+                "location": "Milan, Portugal",
+                "eventCategory": "Travel",
+                "startTime": "11:00 AM",
+                "durationInHours": "0.5",
+                "entranceFee": "",
+                "description": "be extra cautious on bumpy roads.",
+                "notes": "",
+                "ticketLink": ""
+            },
+            "4": {
+                "image": "",
+                "eventName": "Travel Time",
+                "location": "Milan, Portugal",
+                "eventCategory": "Travel",
+                "startTime": "11:00 AM",
+                "durationInHours": "0.5",
+                "entranceFee": "",
+                "description": "be extra cautious on bumpy roads.",
+                "notes": "",
+                "ticketLink": ""
+            },
+            "5": {
+                "image": "",
+                "eventName": "Travel Time",
+                "location": "Milan, Portugal",
+                "eventCategory": "Travel",
+                "startTime": "11:00 AM",
+                "durationInHours": "0.5",
+                "entranceFee": "",
+                "description": "be extra cautious on bumpy roads.",
+                "notes": "",
+                "ticketLink": ""
+            },
+            "6": {
+                "image": "",
+                "eventName": "Travel Time",
+                "location": "Milan, Portugal",
+                "eventCategory": "Travel",
+                "startTime": "11:00 AM",
+                "durationInHours": "0.5",
+                "entranceFee": "",
+                "description": "be extra cautious on bumpy roads.",
+                "notes": "",
+                "ticketLink": ""
+            },
+            "7": {
+                "image": "",
+                "eventName": "Travel Time",
+                "location": "Milan, Portugal",
+                "eventCategory": "Travel",
+                "startTime": "11:00 AM",
+                "durationInHours": "0.5",
+                "entranceFee": "",
+                "description": "be extra cautious on bumpy roads.",
+                "notes": "",
+                "ticketLink": ""
+            },
         }
     },
     {
