@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import ItineraryItem from './components/ItineraryItem';
 import EditItineraryScreen from './screens/EditItineraryScreen'
 import "./App.css"
@@ -93,6 +93,19 @@ const App = () => {
 
   const sortedVals = sortItineraries(itineraries, selectedSortOption);
 
+  const handleSaveOrder = (updatedItinerary) => {
+    setSelectedItinerary(updatedItinerary)
+    console.log("Updated itinerary", updatedItinerary)
+  }
+
+  useEffect(() => {
+    document.body.style.overflow = isDayTrackerOpen ? 'hidden' : 'auto';
+
+    return () => {
+      document.body.style.overflow = 'auto';
+    };
+  }, [isDayTrackerOpen]);
+
   return (
     <div className="app">
       <div className="header">
@@ -148,6 +161,8 @@ const App = () => {
         <DayTrackerScreen 
           itin={selectedItinerary}
           onClose={handleDayTrackerClose}
+          dayTrackerOpen={isDayTrackerOpen}
+          onSaveOrder={handleSaveOrder}
         />
       )}
     </div>

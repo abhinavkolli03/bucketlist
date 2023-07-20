@@ -1,10 +1,9 @@
-/* app.css styles */
 .app {
     max-width: 800px;
     margin: 0 auto;
     padding: 20px;
 }
-  
+
 .header {
     text-align: center;
     margin-bottom: 20px;
@@ -13,7 +12,7 @@
 .tab-list {
     align-items: center;
 }
-/* button styles */
+
 .add-itinerary-button {
     display: flex;
     align-items: center;
