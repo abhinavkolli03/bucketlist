@@ -89,7 +89,7 @@ const App = () => {
     setIsAddButtonExpanded(false);
   };
 
-  const name = 'Anish Palakurthi';
+  const name = 'Abhinav Kolli';
 
   const sortedVals = sortItineraries(itineraries, selectedSortOption);
 
