@@ -54,7 +54,6 @@ const itinerariesData = [
                 "duration": "1 Hour",
                 "description": "Enjoy a delightful dinner at one of Lisbon's finest restaurants, offering a variety of local dishes and seafood specialties.",
                 "typicalDuration": "1 Hour",
-                "image": "date.jpg"
               }
             ]
           },

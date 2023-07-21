@@ -6,10 +6,16 @@
     z-index: 1;
 }
 
-.draggable-event-list.dragging {
+.draggable-event-list-container .dragging {
     background-color: lightblue; 
     border: 2px dashed #ccc;
     opacity: 0.8;
+}
+
+.draggable-event-list-container {
+    max-height: calc(100vh - 100px);
+    max-width: calc(100vh);
+    overflow-y: auto;
 }
 
 .draggable-event-item {
@@ -22,7 +28,7 @@
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.8);
     transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
     background-color: #eaf2f8;
-    cursor: move;
+    cursor: pointer;
     position: relative;
 }
 
@@ -39,12 +45,18 @@
 .draggable-event-image {
     width: 100%;
     height: auto;
-    object-fit: contain;
+    max-height: 200px; 
+    object-fit: cover;
     border-radius: 6px;
 }
 
 .draggable-event-content {
-    padding: 40px;
+    width: 67%;
+    padding: 10px;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
 }
 
 .draggable-event-content h3 {

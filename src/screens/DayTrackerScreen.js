@@ -64,6 +64,10 @@ const DayTrackerScreen = ({ itin, onClose, dayTrackerOpen, onSaveOrder }) => {
 
   const current_events = itin.days[activeDay].events || {};
   console.log(current_events);
+  const numEvents = Object.values(current_events).length;
+  const eventTabWidth = 100 + "%";
+  const eventTabHeight = 10 + "%"; // You can adjust this value as needed
+
 
   return (
     <div>
@@ -91,7 +95,7 @@ const DayTrackerScreen = ({ itin, onClose, dayTrackerOpen, onSaveOrder }) => {
             </button>
           ))}
         </div>
-        <div className={`day-tracker-content ${dayTrackerOpen ? 'open' : ''}`} style={{paddingTop: '300px'}}>
+        <div className={`day-tracker-content ${dayTrackerOpen ? 'open' : ''}`}>
           <DragDropContext onDragEnd={handleDragEnd}>
             <Droppable droppableId="itinerary">
               {(provided, snapshot) => {
@@ -99,7 +103,7 @@ const DayTrackerScreen = ({ itin, onClose, dayTrackerOpen, onSaveOrder }) => {
                   <div
                     {...provided.droppableProps}
                     ref={provided.innerRef}
-                    className={`draggable-event-list ${
+                    className={`draggable-event-list-container ${
                       snapshot.isDraggingOver ? 'dragging' : ''
                     }`}
                     innerRef={provided.innerRef}
@@ -113,19 +117,21 @@ const DayTrackerScreen = ({ itin, onClose, dayTrackerOpen, onSaveOrder }) => {
                                 key={event.id}
                                 draggableId={event.id}
                                 index={index}
-                                style={{color: keywordColor}}
                             >
                                 {(provided, snapshot) => {
                                     return (
+                                        <div style={{width: eventTabWidth, height: eventTabHeight}}>
                                         <div
                                             ref={provided.innerRef}
                                             {...provided.draggableProps}
                                             {...provided.dragHandleProps}
                                             className="draggable-event-item"
-                                            
                                         >
-                                        <div className="draggable-event-content">
-                                            <h3>{event.name}</h3>
+                                       
+                                        <div className="draggable-event-content"
+                                         style={{width: eventTabWidth, height: eventTabHeight, backgroundColor: keywordColor}}>
+                                            <h2>{event.name}</h2>
+                                            <h4>{event.keyword}</h4>
                                             <p>{event.description}</p>
                                             <div className="event-time">     
                                                 <span className="calendar-icon">   <FaCalendar/></span>
@@ -155,13 +161,15 @@ const DayTrackerScreen = ({ itin, onClose, dayTrackerOpen, onSaveOrder }) => {
                                                     />
                                                 </div>
                                             </div>
-                                            <div className="draggable-event-image-container">
+                                            <div className="draggable-event-image-container" style={{backgroundColor: keywordColor}}>
                                                 <img
                                                     src={event.image ? require("../test-images/" + event.image) : require("../test-images/placeholder.jpg")}
                                                     alt={event.name}
                                                     className="draggable-event-image"
-                                                />
-                                            </div>
+                                            />
+                                        </div>
+                                        </div>
+                                        
                                         </div>
                                     );
                                 }}
